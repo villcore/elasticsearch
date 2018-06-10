@@ -115,8 +115,16 @@ public final class NetworkModule {
         this.settings = settings;
         this.transportClient = transportClient;
         for (NetworkPlugin plugin : plugins) {
-            Map<String, Supplier<HttpServerTransport>> httpTransportFactory = plugin.getHttpTransports(settings, threadPool, bigArrays,
-                circuitBreakerService, namedWriteableRegistry, xContentRegistry, networkService, dispatcher);
+            Map<String, Supplier<HttpServerTransport>> httpTransportFactory = plugin.getHttpTransports(
+                settings,
+                threadPool,
+                bigArrays,
+                circuitBreakerService,
+                namedWriteableRegistry,
+                xContentRegistry,
+                networkService,
+                dispatcher);
+
             if (transportClient == false) {
                 for (Map.Entry<String, Supplier<HttpServerTransport>> entry : httpTransportFactory.entrySet()) {
                     registerHttpTransport(entry.getKey(), entry.getValue());

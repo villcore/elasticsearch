@@ -398,12 +398,16 @@ final class TransportClientNodesService extends AbstractComponent implements Clo
         }
     }
 
+    /**
+     * 根据传入的transport address定期进行节点存活检测
+     */
     class SimpleNodeSampler extends NodeSampler {
 
         @Override
         protected void doSample() {
             HashSet<DiscoveryNode> newNodes = new HashSet<>();
             ArrayList<DiscoveryNode> newFilteredNodes = new ArrayList<>();
+
             for (DiscoveryNode listedNode : listedNodes) {
                 try (Transport.Connection connection = transportService.openConnection(listedNode, LISTED_NODES_PROFILE)){
                     final PlainTransportFuture<LivenessResponse> handler = new PlainTransportFuture<>(
@@ -443,6 +447,9 @@ final class TransportClientNodesService extends AbstractComponent implements Clo
         }
     }
 
+    /**
+     * 对所有可获取的节点定期进行节点存活检测,如果有新增存或节点，建立连接，连接保持在TransportService，可以复用
+     */
     class SniffNodesSampler extends NodeSampler {
 
         @Override
@@ -566,7 +573,6 @@ final class TransportClientNodesService extends AbstractComponent implements Clo
     }
 
     public interface NodeListenerCallback<Response> {
-
         void doWithNode(DiscoveryNode node, ActionListener<Response> listener);
     }
 

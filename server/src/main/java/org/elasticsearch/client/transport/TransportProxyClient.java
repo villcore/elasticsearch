@@ -55,6 +55,7 @@ final class TransportProxyClient {
     public <Request extends ActionRequest, Response extends ActionResponse, RequestBuilder extends
         ActionRequestBuilder<Request, Response>> void execute(final Action<Request, Response> action,
                                                                               final Request request, ActionListener<Response> listener) {
+        //该类不处理请求失败节点，nodeService会定期的通过线程清理掉失败的node，具体节点是轮询选取
         final TransportActionNodeProxy<Request, Response> proxy = proxies.get(action);
         assert proxy != null : "no proxy found for action: " + action;
         nodesService.execute((n, l) -> proxy.execute(n, request, l), listener);
